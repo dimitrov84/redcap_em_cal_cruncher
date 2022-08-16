@@ -1,0 +1,121 @@
+{
+  "name": "MGB CalCruncher",
+
+  "namespace": "MGB\\MGBCalCruncher",
+
+  "description": "Provide the ability to run/re-run calculated fields when a record is saved or updated",
+
+  "authors": [
+    {
+      "name": "Dimitar Dimitrov",
+      "email": "redcap@partners.org",
+      "institution": "Mass General Brigham"
+    }
+  ],
+
+  "permissions": [
+    "redcap_save_record",
+    "redcap_survey_complete"
+  ],
+
+  "versions": [
+    {
+      "1.0.0": "Initial Development",
+      "2.0.0": "Introducing CRON functionality to this module",
+      "2.1.0": "Introducing a Control Center screen to run cron jobs on-demand",
+      "2.1.1": "Updated the direct SQL queries to be parametarized"
+    }
+  ],
+
+  "crons": [
+    {
+      "cron_name": "calcruncher_cron",
+      "cron_description": "Execute CalCruncher at 6AM and 6PM - the cron job runs every hour and checks to see if it's 6AM or 6PM",
+      "method": "run_calc_crunch_cron",
+      "cron_frequency": "3600",
+      "cron_max_run_time": "500"
+    }
+  ],
+
+  "links": {
+    "control-center": [
+      {
+        "name": "EM: CalCruncer Admin Screen",
+        "icon": "fas fa-book",
+        "url": "mgb_calcruncher_control_center_screen.php"
+      }
+    ],
+    "project": [
+    ]
+  },
+  "no-auth-pages":["mgb_calcruncher_cron"],
+  "project-settings": [
+    {
+      "key": "calcruncher-main-setting",
+      "name": "Re-Save Calculations on the selected forms:",
+      "required": true,
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings": [
+        {
+          "key": "calcruncher-selected-surveys-form",
+          "name": "<b>Specify form</b>",
+          "required": true,
+          "type": "form-list"
+        },
+        {
+          "key": "calcruncher-selected-surveys-form-status",
+          "name": "Set form status to (only if no other form status has been set)",
+          "required": false,
+          "type": "dropdown",
+          "choices": [
+            { "value": "0", "name": "Incomplete" },
+            { "value": "1", "name": "Unverified" },
+            { "value": "2", "name": "Complete" }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "calcruncher-cron-enabled",
+      "name": "<b>Enable CRON (automatic timed runs)</i>",
+      "required": false,
+      "type": "checkbox"
+    },
+    {
+      "key": "calcruncher-cron-frequency",
+      "name": "CRON Frequency (if enabled)",
+      "required": true,
+      "allow-project-overrides": false,
+      "type": "radio",
+      "choices": [
+        { "value": "1", "name": "Runs once per day at 6 AM" },
+        { "value": "2", "name": "Run twice per day 6 AM and 6 PM" }
+      ],
+      "branchingLogic": {
+        "field": "calcruncher-cron-enabled",
+        "value": "1"
+      }
+    },
+    {
+      "key": "calcruncher-cron-records",
+      "name": "CRON records (if enabled) - Created or Updated ONLY",
+      "required": true,
+      "allow-project-overrides": false,
+      "type": "radio",
+      "choices": [
+        { "value": "1", "name": "Run for ALL records" },
+        { "value": "2", "name": "Run ONLY for records from the last 24 hours" },
+        { "value": "3", "name": "Run ONLY for records from the last 7 days" }
+      ],
+      "branchingLogic": {
+        "field": "calcruncher-cron-enabled",
+        "value": "1"
+      }
+    }
+  ],
+
+  "system-settings": [
+
+  ]
+}
