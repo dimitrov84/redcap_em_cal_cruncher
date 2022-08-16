@@ -13,6 +13,8 @@
     }
   ],
 
+  "framework-version": 9,
+
   "permissions": [
     "redcap_save_record",
     "redcap_survey_complete"
